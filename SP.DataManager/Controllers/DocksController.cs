@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutDocks(int id, Docks docks)
         {
             if (id != docks.Id)
@@ -78,6 +80,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Docks>> PostDocks(Docks docks)
         {
             _context.Docks.Add(docks);
@@ -88,6 +91,7 @@ namespace SP.DataManager.Controllers
 
         // DELETE: api/Docks/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<Docks>> DeleteDocks(int id)
         {
             var docks = await _context.Docks.FindAsync(id);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SP.DataManager.Controllers
 
         // GET: api/DockManagers
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<DockManagers>>> GetDockManagers()
         {
             return await _context.DockManagers.ToListAsync();
@@ -30,6 +32,7 @@ namespace SP.DataManager.Controllers
 
         // GET: api/DockManagers/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<DockManagers>> GetDockManagers(int id)
         {
             var dockManagers = await _context.DockManagers.FindAsync(id);
@@ -46,6 +49,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutDockManagers(int id, DockManagers dockManagers)
         {
             if (id != dockManagers.Id)
@@ -78,6 +82,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<DockManagers>> PostDockManagers(DockManagers dockManagers)
         {
             _context.DockManagers.Add(dockManagers);
@@ -88,6 +93,7 @@ namespace SP.DataManager.Controllers
 
         // DELETE: api/DockManagers/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<DockManagers>> DeleteDockManagers(int id)
         {
             var dockManagers = await _context.DockManagers.FindAsync(id);

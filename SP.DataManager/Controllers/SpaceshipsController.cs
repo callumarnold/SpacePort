@@ -24,7 +24,6 @@ namespace SP.DataManager.Controllers
 
         // GET: api/Spaceships
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Spaceships>>> GetSpaceships()
         {
             return await _context.Spaceships.ToListAsync();
@@ -48,6 +47,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutSpaceships(int id, Spaceships spaceships)
         {
             if (id != spaceships.Id)
@@ -80,6 +80,7 @@ namespace SP.DataManager.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Spaceships>> PostSpaceships(Spaceships spaceships)
         {
             _context.Spaceships.Add(spaceships);
@@ -90,6 +91,7 @@ namespace SP.DataManager.Controllers
 
         // DELETE: api/Spaceships/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<Spaceships>> DeleteSpaceships(int id)
         {
             var spaceships = await _context.Spaceships.FindAsync(id);
