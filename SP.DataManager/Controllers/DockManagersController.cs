@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DockManagersController : ControllerBase
+    public class DockManagersController : Controller
     {
         private readonly SPDataContext _context;
 
@@ -22,90 +19,130 @@ namespace SP.DataManager.Controllers
             _context = context;
         }
 
-        // GET: api/DockManagers
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<DockManagers>>> GetDockManagers()
+        // GET: DockManagers
+        public async Task<IActionResult> Index()
         {
-            return await _context.DockManagers.ToListAsync();
+            return View(await _context.DockManagers.ToListAsync());
         }
 
-        // GET: api/DockManagers/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<DockManagers>> GetDockManagers(int id)
+        // GET: DockManagers/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var dockManagers = await _context.DockManagers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var dockManagers = await _context.DockManagers
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (dockManagers == null)
             {
                 return NotFound();
             }
 
-            return dockManagers;
+            return View(dockManagers);
         }
 
-        // PUT: api/DockManagers/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> PutDockManagers(int id, DockManagers dockManagers)
+        // GET: DockManagers/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: DockManagers/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName")] DockManagers dockManagers)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(dockManagers);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(dockManagers);
+        }
+
+        // GET: DockManagers/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dockManagers = await _context.DockManagers.FindAsync(id);
+            if (dockManagers == null)
+            {
+                return NotFound();
+            }
+            return View(dockManagers);
+        }
+
+        // POST: DockManagers/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName")] DockManagers dockManagers)
         {
             if (id != dockManagers.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(dockManagers).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DockManagersExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(dockManagers);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!DockManagersExists(dockManagers.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(dockManagers);
         }
 
-        // POST: api/DockManagers
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<DockManagers>> PostDockManagers(DockManagers dockManagers)
+        // GET: DockManagers/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            _context.DockManagers.Add(dockManagers);
-            await _context.SaveChangesAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction("GetDockManagers", new { id = dockManagers.Id }, dockManagers);
-        }
-
-        // DELETE: api/DockManagers/5
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<ActionResult<DockManagers>> DeleteDockManagers(int id)
-        {
-            var dockManagers = await _context.DockManagers.FindAsync(id);
+            var dockManagers = await _context.DockManagers
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (dockManagers == null)
             {
                 return NotFound();
             }
 
+            return View(dockManagers);
+        }
+
+        // POST: DockManagers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var dockManagers = await _context.DockManagers.FindAsync(id);
             _context.DockManagers.Remove(dockManagers);
             await _context.SaveChangesAsync();
-
-            return dockManagers;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool DockManagersExists(int id)

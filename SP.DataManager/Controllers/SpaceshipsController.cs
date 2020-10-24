@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SpaceshipsController : ControllerBase
+    public class SpaceshipsController : Controller
     {
         private readonly SPDataContext _context;
 
@@ -22,88 +19,137 @@ namespace SP.DataManager.Controllers
             _context = context;
         }
 
-        // GET: api/Spaceships
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Spaceships>>> GetSpaceships()
+        // GET: Spaceships
+        public async Task<IActionResult> Index()
         {
-            return await _context.Spaceships.ToListAsync();
+            var sPDataContext = _context.Spaceships.Include(s => s.Dock);
+            return View(await sPDataContext.ToListAsync());
         }
 
-        // GET: api/Spaceships/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Spaceships>> GetSpaceships(int id)
+        // GET: Spaceships/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var spaceships = await _context.Spaceships.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var spaceships = await _context.Spaceships
+                .Include(s => s.Dock)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (spaceships == null)
             {
                 return NotFound();
             }
 
-            return spaceships;
+            return View(spaceships);
         }
 
-        // PUT: api/Spaceships/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> PutSpaceships(int id, Spaceships spaceships)
+        // GET: Spaceships/Create
+        public IActionResult Create()
+        {
+            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name");
+            return View();
+        }
+
+        // POST: Spaceships/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,Owner,CrewSize,DockId")] Spaceships spaceships)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(spaceships);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            return View(spaceships);
+        }
+
+        // GET: Spaceships/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var spaceships = await _context.Spaceships.FindAsync(id);
+            if (spaceships == null)
+            {
+                return NotFound();
+            }
+            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            return View(spaceships);
+        }
+
+        // POST: Spaceships/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Owner,CrewSize,DockId")] Spaceships spaceships)
         {
             if (id != spaceships.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(spaceships).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SpaceshipsExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(spaceships);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!SpaceshipsExists(spaceships.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            return View(spaceships);
         }
 
-        // POST: api/Spaceships
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<Spaceships>> PostSpaceships(Spaceships spaceships)
+        // GET: Spaceships/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            _context.Spaceships.Add(spaceships);
-            await _context.SaveChangesAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction("GetSpaceships", new { id = spaceships.Id }, spaceships);
-        }
-
-        // DELETE: api/Spaceships/5
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<ActionResult<Spaceships>> DeleteSpaceships(int id)
-        {
-            var spaceships = await _context.Spaceships.FindAsync(id);
+            var spaceships = await _context.Spaceships
+                .Include(s => s.Dock)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (spaceships == null)
             {
                 return NotFound();
             }
 
+            return View(spaceships);
+        }
+
+        // POST: Spaceships/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var spaceships = await _context.Spaceships.FindAsync(id);
             _context.Spaceships.Remove(spaceships);
             await _context.SaveChangesAsync();
-
-            return spaceships;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool SpaceshipsExists(int id)
