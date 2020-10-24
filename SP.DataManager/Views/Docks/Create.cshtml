@@ -19,12 +19,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ManagerId" class="control-label"></label>
-                <select asp-for="ManagerId" class ="form-control" asp-items="ViewBag.ManagerId"></select>
+                <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagerId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="CurrentCapacity" class="control-label"></label>
                 <input asp-for="CurrentCapacity" class="form-control" />
                 <span asp-validation-for="CurrentCapacity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaxCapacity" class="control-label"></label>
+                <input asp-for="MaxCapacity" class="form-control" />
+                <span asp-validation-for="MaxCapacity" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

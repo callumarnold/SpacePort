@@ -5,5 +5,5 @@
     [Owner] NVARCHAR(50) NOT NULL, 
     [Crew Size] INT NOT NULL, 
     [DockId] INT NOT NULL, 
-    CONSTRAINT [FK_Spaceship_ToDock] FOREIGN KEY ([DockId]) REFERENCES [Docks]([Id])
+    CONSTRAINT [FK_Spaceship_ToDock] FOREIGN KEY ([DockId]) REFERENCES [Docks]([Id]) ON DELETE CASCADE
 )
