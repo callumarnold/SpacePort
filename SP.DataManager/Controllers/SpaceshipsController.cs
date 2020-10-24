@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var sPDataContext = _context.Spaceships.Include(s => s.Dock);
@@ -27,6 +29,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name");
@@ -57,6 +61,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([Bind("Id,Name,Owner,CrewSize,DockId")] Spaceships spaceships)
         {
             if (ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +97,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Owner,CrewSize,DockId")] Spaceships spaceships)
         {
             if (id != spaceships.Id)
@@ -123,6 +130,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,6 +152,7 @@ namespace SP.DataManager.Controllers
         // POST: Spaceships/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var spaceships = await _context.Spaceships.FindAsync(id);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var sPDataContext = _context.Docks.Include(d => d.Manager);
@@ -27,6 +29,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["ManagerId"] = new SelectList(_context.DockManagers, "Id", "FirstName");
@@ -57,6 +61,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,ManagerId,MaxCapacity,CurrentCapacity")] Docks docks)
         {
             if (ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +97,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ManagerId,MaxCapacity,CurrentCapacity")] Docks docks)
         {
             if (id != docks.Id)
@@ -122,6 +129,7 @@ namespace SP.DataManager.Controllers
             return View(docks);
         }
 
+        [Authorize]
         // GET: Docks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -144,6 +152,7 @@ namespace SP.DataManager.Controllers
         // POST: Docks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var docks = await _context.Docks.FindAsync(id);
