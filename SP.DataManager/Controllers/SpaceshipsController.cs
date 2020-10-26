@@ -49,7 +49,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Create
-        [AllowAnonymous]
+        [Authorize(Roles = "Manager, Admin")]
         public IActionResult Create()
         {
             ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name");
@@ -75,7 +75,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +97,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Owner,CrewSize,DockId")] Spaceships spaceships)
         {
             if (id != spaceships.Id)
@@ -130,7 +130,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Spaceships/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,7 +152,7 @@ namespace SP.DataManager.Controllers
         // POST: Spaceships/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var spaceships = await _context.Spaceships.FindAsync(id);

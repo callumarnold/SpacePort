@@ -95,9 +95,14 @@ namespace SP.DataManager
             {
                 await RoleManager.CreateAsync(new IdentityRole("Admin"));
             }
-
+            checkRole = await RoleManager.RoleExistsAsync("Manager");
+            if (checkRole == false)
+            {
+                await RoleManager.CreateAsync(new IdentityRole("Manager"));
+            }
             //gets user and assigns them to admin role 
             await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("callumarnold@hotmail.com"), "Admin");
+            await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("manager@spaceport.com"), "Manager");
         }
 
     }

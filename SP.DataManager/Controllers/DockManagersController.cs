@@ -21,14 +21,14 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.DockManagers.ToListAsync());
         }
 
         // GET: DockManagers/Details/5
-        [AllowAnonymous]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,7 +47,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager, Admin")]
         public IActionResult Create()
         {
             return View();
@@ -70,7 +70,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,7 +91,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName")] DockManagers dockManagers)
         {
             if (id != dockManagers.Id)
@@ -123,7 +123,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,7 +144,7 @@ namespace SP.DataManager.Controllers
         // POST: DockManagers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var dockManagers = await _context.DockManagers.FindAsync(id);

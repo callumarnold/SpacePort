@@ -49,7 +49,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks/Create
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public IActionResult Create()
         {
             ViewData["ManagerId"] = new SelectList(_context.DockManagers, "Id", "FirstName");
@@ -61,7 +61,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,ManagerId,MaxCapacity,CurrentCapacity")] Docks docks)
         {
             if (ModelState.IsValid)
@@ -75,7 +75,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: Docks/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +97,7 @@ namespace SP.DataManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ManagerId,MaxCapacity,CurrentCapacity")] Docks docks)
         {
             if (id != docks.Id)
@@ -129,7 +129,7 @@ namespace SP.DataManager.Controllers
             return View(docks);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Docks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -152,7 +152,7 @@ namespace SP.DataManager.Controllers
         // POST: Docks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var docks = await _context.Docks.FindAsync(id);
