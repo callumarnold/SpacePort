@@ -21,7 +21,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.DockManagers.ToListAsync());
@@ -47,7 +47,7 @@ namespace SP.DataManager.Controllers
         }
 
         // GET: DockManagers/Create
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
