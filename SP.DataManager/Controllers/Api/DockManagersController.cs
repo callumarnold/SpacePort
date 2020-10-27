@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
+using SP.DataManager.Data.DataAccess;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers.Api
@@ -27,6 +28,7 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<IEnumerable<DockManagers>>> GetDockManagers()
         {
+            
             return await _context.DockManagers.ToListAsync();
         }
 

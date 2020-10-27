@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SP.DataManager.Models;
+using SP.DataManager.Data.DataAccess;
 
 namespace SP.DataManager
 {
@@ -38,6 +39,7 @@ namespace SP.DataManager
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddScoped<IDockManagersDataAccess, DockManagersDataAccess>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 

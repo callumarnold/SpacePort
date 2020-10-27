@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
+using SP.DataManager.Data.DataAccess;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers
@@ -15,6 +16,7 @@ namespace SP.DataManager.Controllers
     {
         private readonly SPDataContext _context;
 
+
         public DockManagersController(SPDataContext context)
         {
             _context = context;
@@ -22,10 +24,15 @@ namespace SP.DataManager.Controllers
 
         // GET: DockManagers
         [Authorize(Roles = "Manager, Admin")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.DockManagers.ToListAsync());
+            return View(_context.GetDockManagers());
         }
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.DockManagers.ToListAsync());
+        //}
 
         // GET: DockManagers/Details/5
         [Authorize(Roles = "Manager, Admin")]
