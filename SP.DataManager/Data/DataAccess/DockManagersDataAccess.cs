@@ -7,20 +7,20 @@ using SP.DataManager.Models;
 
 namespace SP.DataManager.Data.DataAccess
 {
-    //public class DockManagersDataAccess
-    //{
-    //    private readonly SPDataContext _context;
-    //    public DockManagersDataAccess(SPDataContext context)
-    //    {
-    //        _context = context;
-    //    }
 
-    //    public async IAsyncEnumerable<dynamic> GetDockManagers()
-    //    {
-    //        return await _context.DockManagers.ToListAsync();
-    //    }
+    public class DockManagersDataAccess : IDockManagersDataAccess
+    {
+        private readonly SPDataContext _context;
+        public DockManagersDataAccess(SPDataContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<DockManagers>> GetDockManagers()
+        {
+            return await _context.DockManagers.ToListAsync();
+        }
 
 
-    //    //await _context.DockManagers.ToListAsync()
-    //}
+    }
 }

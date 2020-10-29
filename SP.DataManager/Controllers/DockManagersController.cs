@@ -15,18 +15,21 @@ namespace SP.DataManager.Controllers
     public class DockManagersController : Controller
     {
         private readonly SPDataContext _context;
+        private readonly IDockManagersDataAccess _dockManagersDataAccess;
 
 
-        public DockManagersController(SPDataContext context)
+        public DockManagersController(SPDataContext context, IDockManagersDataAccess dockManagersDataAccess)
         {
             _context = context;
+            _dockManagersDataAccess = dockManagersDataAccess;
         }
 
         // GET: DockManagers
         [Authorize(Roles = "Manager, Admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_context.GetDockManagers());
+            //return View(await _context.GetDockManagers());
+            return View(await _dockManagersDataAccess.GetDockManagers());
         }
 
         //public async Task<IActionResult> Index()
@@ -51,7 +54,22 @@ namespace SP.DataManager.Controllers
             }
 
             return View(dockManagers);
+
+
         }
+
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    var dockManager = await _context.GetDockManagerById(id);
+        //    if(dockManager == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    else
+        //    {
+        //        return View(dockManager);
+        //    }
+        //}
 
         // GET: DockManagers/Create
         [Authorize(Roles = "Manager, Admin")]

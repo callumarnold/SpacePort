@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SP.DataManager.Models;
@@ -89,11 +90,28 @@ namespace SP.DataManager.Data
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-        public List<DockManagers> GetDockManagers()
-        {
-            return DockManagers.ToList();
-        }
+        //public async Task<List<DockManagers>> GetDockManagers()
+        //{
+        //    return await DockManagers.ToListAsync();
+        //}
 
-        public 
+        //public async Task<DockManagers> GetDockManagerById(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return null;
+        //    }
+        //    if (DockManagers == null)
+        //    {
+        //        return null;
+        //    }
+        //    else
+        //    {
+        //        return await DockManagers.FirstOrDefaultAsync(m => m.Id == id);
+        //    }
+
+
+        //    //FirstOrDefaultAsync(m => m.Id == id);
+        //}
     }
 }

@@ -39,7 +39,7 @@ namespace SP.DataManager
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            //services.AddScoped<IDockManagersDataAccess, DockManagersDataAccess>();
+            services.AddScoped<IDockManagersDataAccess, DockManagersDataAccess>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
