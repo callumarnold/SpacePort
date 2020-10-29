@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SP.DataManager.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SP.DataManager.Data.DataAccess
 {
@@ -36,6 +37,12 @@ namespace SP.DataManager.Data.DataAccess
 
             return dockManagers;
 
+        }
+
+        public async Task CreateDockManager(DockManagers dockManagers)
+        {
+            _context.Add(dockManagers);
+            await _context.SaveChangesAsync();
         }
 
 

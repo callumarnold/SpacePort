@@ -89,8 +89,9 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dockManagers);
-                await _context.SaveChangesAsync();
+                //_context.Add(dockManagers);
+                //await _context.SaveChangesAsync();
+                await _dockManagersDataAccess.CreateDockManager(dockManagers);
                 return RedirectToAction(nameof(Index));
             }
             return View(dockManagers);
