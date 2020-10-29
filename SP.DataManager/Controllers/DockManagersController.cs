@@ -39,37 +39,39 @@ namespace SP.DataManager.Controllers
 
         // GET: DockManagers/Details/5
         [Authorize(Roles = "Manager, Admin")]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dockManagers = await _context.DockManagers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dockManagers == null)
-            {
-                return NotFound();
-            }
-
-            return View(dockManagers);
-
-
-        }
-
         //public async Task<IActionResult> Details(int? id)
         //{
-        //    var dockManager = await _context.GetDockManagerById(id);
-        //    if(dockManager == null)
+        //    if (id == null)
         //    {
         //        return NotFound();
         //    }
-        //    else
+
+        //    var dockManagers = await _context.DockManagers
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (dockManagers == null)
         //    {
-        //        return View(dockManager);
+        //        return NotFound();
         //    }
+
+        //    return View(dockManagers);
+
+
+
+
         //}
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            var dockManager = await _dockManagersDataAccess.GetDataManagersById(id);
+            if (dockManager == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View(dockManager);
+            }
+        }
 
         // GET: DockManagers/Create
         [Authorize(Roles = "Manager, Admin")]

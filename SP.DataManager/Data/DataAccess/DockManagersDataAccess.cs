@@ -21,6 +21,23 @@ namespace SP.DataManager.Data.DataAccess
             return await _context.DockManagers.ToListAsync();
         }
 
+        public async Task<DockManagers> GetDataManagersById(int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+            var dockManagers = await _context.DockManagers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (dockManagers == null)
+            {
+                return null;
+            }
+
+            return dockManagers;
+
+        }
+
 
     }
 }

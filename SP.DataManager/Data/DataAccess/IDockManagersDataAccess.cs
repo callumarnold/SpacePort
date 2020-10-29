@@ -6,6 +6,7 @@ namespace SP.DataManager.Data.DataAccess
 {
     public interface IDockManagersDataAccess
     {
+        Task<DockManagers> GetDataManagersById(int? id);
         Task<List<DockManagers>> GetDockManagers();
     }
 }
