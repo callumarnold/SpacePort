@@ -12,5 +12,6 @@ namespace SP.DataManager.Data.DataAccess
         Task EditDockManagers(DockManagers dockManagers);
         Task DeleteDockManager(int id);
         bool CheckDockManagersExists(int id);
+        dynamic ReturnDockManagers();
     }
 }

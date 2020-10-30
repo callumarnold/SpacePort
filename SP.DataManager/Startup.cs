@@ -40,6 +40,7 @@ namespace SP.DataManager
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddScoped<IDockManagersDataAccess, DockManagersDataAccess>();
+            services.AddScoped<IDocksDataAccess, DocksDataAccess>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 

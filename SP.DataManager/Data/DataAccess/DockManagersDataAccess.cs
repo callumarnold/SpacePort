@@ -63,5 +63,10 @@ namespace SP.DataManager.Data.DataAccess
             return _context.DockManagers.Any(e => e.Id == id);
         }
 
+        public dynamic ReturnDockManagers()
+        {
+            return _context.DockManagers;
+        }
+
     }
 }
