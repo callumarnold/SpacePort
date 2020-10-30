@@ -45,6 +45,23 @@ namespace SP.DataManager.Data.DataAccess
             await _context.SaveChangesAsync();
         }
 
+        public async Task EditDockManagers(DockManagers dockManagers)
+        {
+            _context.Update(dockManagers);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteDockManager(int id)
+        {
+            var dockManagers = await _context.DockManagers.FindAsync(id);
+            _context.DockManagers.Remove(dockManagers);
+            await _context.SaveChangesAsync();
+        }
+
+        public bool CheckDockManagersExists(int id)
+        {
+            return _context.DockManagers.Any(e => e.Id == id);
+        }
 
     }
 }

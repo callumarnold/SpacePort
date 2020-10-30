@@ -9,5 +9,8 @@ namespace SP.DataManager.Data.DataAccess
         Task<DockManagers> GetDataManagersById(int? id);
         Task<List<DockManagers>> GetDockManagers();
         Task CreateDockManager(DockManagers dockManagers);
+        Task EditDockManagers(DockManagers dockManagers);
+        Task DeleteDockManager(int id);
+        bool CheckDockManagersExists(int id);
     }
 }
