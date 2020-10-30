@@ -14,15 +14,12 @@ namespace SP.DataManager.Controllers
 {
     public class DocksController : Controller
     {
-        //private readonly SPDataContext _context;
         private readonly IDockManagersDataAccess _dockManagersDataAccess;
         private readonly IDocksDataAccess _docksDataAccess;
 
 
-        public DocksController(/*SPDataContext context,*/ 
-            IDockManagersDataAccess dockManagersDataAccess, IDocksDataAccess docksDataAccess)
+        public DocksController(IDockManagersDataAccess dockManagersDataAccess, IDocksDataAccess docksDataAccess)
         {
-            //_context = context;
             _dockManagersDataAccess = dockManagersDataAccess;
             _docksDataAccess = docksDataAccess;
         }
@@ -31,8 +28,6 @@ namespace SP.DataManager.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            //var sPDataContext = _context.Docks.Include(d => d.Manager);
-            //return View(await sPDataContext.ToListAsync());
             return View(await _docksDataAccess.GetDocks());
         }
 
@@ -40,21 +35,6 @@ namespace SP.DataManager.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var docks = await _context.Docks
-            //    .Include(d => d.Manager)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (docks == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(docks);
-
             var docks = await _docksDataAccess.GetDockById(id);
             if (docks == null)
             {
@@ -85,8 +65,6 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(docks);
-                //await _context.SaveChangesAsync();
                 await _docksDataAccess.CreateDock(docks);
                 return RedirectToAction(nameof(Index));
             }
@@ -103,7 +81,6 @@ namespace SP.DataManager.Controllers
                 return NotFound();
             }
 
-            //var docks = await _context.Docks.FindAsync(id);
             var docks = await _docksDataAccess.GetDockById(id);
             if (docks == null)
             {
@@ -130,8 +107,6 @@ namespace SP.DataManager.Controllers
             {
                 try
                 {
-                    //_context.Update(docks);
-                    //await _context.SaveChangesAsync();
                     await _docksDataAccess.EditDocks(docks);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -160,9 +135,6 @@ namespace SP.DataManager.Controllers
                 return NotFound();
             }
 
-            //var docks = await _context.Docks
-            //    .Include(d => d.Manager)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             var docks = await _docksDataAccess.GetDockById(id);
             if (docks == null)
             {
@@ -178,16 +150,12 @@ namespace SP.DataManager.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var docks = await _context.Docks.FindAsync(id);
-            //_context.Docks.Remove(docks);
-            //await _context.SaveChangesAsync();
             await _docksDataAccess.DeleteDock(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocksExists(int id)
         {
-            //return _context.Docks.Any(e => e.Id == id);
             return _docksDataAccess.CheckDockExists(id);
         }
     }

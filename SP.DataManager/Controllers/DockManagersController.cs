@@ -14,13 +14,11 @@ namespace SP.DataManager.Controllers
 {
     public class DockManagersController : Controller
     {
-        //private readonly SPDataContext _context;
         private readonly IDockManagersDataAccess _dockManagersDataAccess;
 
 
-        public DockManagersController(/*SPDataContext context, */IDockManagersDataAccess dockManagersDataAccess)
+        public DockManagersController(IDockManagersDataAccess dockManagersDataAccess)
         {
-            //_context = context;
             _dockManagersDataAccess = dockManagersDataAccess;
         }
 
@@ -28,38 +26,11 @@ namespace SP.DataManager.Controllers
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.GetDockManagers());
             return View(await _dockManagersDataAccess.GetDockManagers());
         }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.DockManagers.ToListAsync());
-        //}
-
         // GET: DockManagers/Details/5
         [Authorize(Roles = "Manager, Admin")]
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var dockManagers = await _context.DockManagers
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (dockManagers == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(dockManagers);
-
-
-
-
-        //}
-
         public async Task<IActionResult> Details(int? id)
         {
             var dockManager = await _dockManagersDataAccess.GetDataManagersById(id);
@@ -89,8 +60,6 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(dockManagers);
-                //await _context.SaveChangesAsync();
                 await _dockManagersDataAccess.CreateDockManager(dockManagers);
                 return RedirectToAction(nameof(Index));
             }
@@ -132,8 +101,6 @@ namespace SP.DataManager.Controllers
             {
                 try
                 {
-                    //_context.Update(dockManagers);
-                    //await _context.SaveChangesAsync();
                     await _dockManagersDataAccess.EditDockManagers(dockManagers);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -161,8 +128,6 @@ namespace SP.DataManager.Controllers
                 return NotFound();
             }
 
-            //var dockManagers = await _context.DockManagers
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             var dockManagers = await _dockManagersDataAccess.GetDataManagersById(id);
             if (dockManagers == null)
             {
@@ -178,16 +143,12 @@ namespace SP.DataManager.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var dockManagers = await _context.DockManagers.FindAsync(id);
-            //_context.DockManagers.Remove(dockManagers);
-            //await _context.SaveChangesAsync();
             await _dockManagersDataAccess.DeleteDockManager(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool DockManagersExists(int id)
         {
-            //return _context.DockManagers.Any(e => e.Id == id);
             return _dockManagersDataAccess.CheckDockManagersExists(id);
         }
     }

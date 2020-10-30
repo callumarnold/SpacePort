@@ -30,9 +30,6 @@ namespace SP.DataManager.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            //var sPDataContext = _context.Spaceships.Include(s => s.Dock);
-            //return View(await sPDataContext.ToListAsync());
-
             return View(await _spaceshipsDataAccess.GetSpaceships());
         }
 
@@ -40,21 +37,6 @@ namespace SP.DataManager.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var spaceships = await _context.Spaceships
-            //    .Include(s => s.Dock)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (spaceships == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(spaceships);
-
             var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
             if(spaceships == null)
             {
@@ -84,8 +66,6 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(spaceships);
-                //await _context.SaveChangesAsync();
                 await _spaceshipsDataAccess.CreateSpaceship(spaceships);
                 return RedirectToAction(nameof(Index));
             }
@@ -128,8 +108,6 @@ namespace SP.DataManager.Controllers
             {
                 try
                 {
-                    //_context.Update(spaceships);
-                    //await _context.SaveChangesAsync();
                     await _spaceshipsDataAccess.EditSpaceships(spaceships);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -157,10 +135,6 @@ namespace SP.DataManager.Controllers
             {
                 return NotFound();
             }
-
-            //var spaceships = await _context.Spaceships
-            //    .Include(s => s.Dock)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
             if (spaceships == null)
             {
@@ -176,16 +150,12 @@ namespace SP.DataManager.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var spaceships = await _context.Spaceships.FindAsync(id);
-            //_context.Spaceships.Remove(spaceships);
-            //await _context.SaveChangesAsync();
             await _spaceshipsDataAccess.DeleteSpaceships(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool SpaceshipsExists(int id)
         {
-            //return _context.Spaceships.Any(e => e.Id == id);
             return _spaceshipsDataAccess.CheckSpaceshipsExists(id);
         }
     }
