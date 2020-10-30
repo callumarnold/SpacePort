@@ -7,52 +7,70 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
+using SP.DataManager.Data.DataAccess;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers
 {
     public class SpaceshipsController : Controller
     {
-        private readonly SPDataContext _context;
+        //private readonly SPDataContext _context;
+        private readonly ISpaceshipsDataAccess _spaceshipsDataAccess;
+        private readonly IDocksDataAccess _docksDataAccess;
 
-        public SpaceshipsController(SPDataContext context)
+        public SpaceshipsController(/*SPDataContext context,*/ 
+            ISpaceshipsDataAccess spaceshipsDataAccess, IDocksDataAccess docksDataAccess)
         {
-            _context = context;
+
+            _spaceshipsDataAccess = spaceshipsDataAccess;
+            _docksDataAccess = docksDataAccess;
         }
 
         // GET: Spaceships
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var sPDataContext = _context.Spaceships.Include(s => s.Dock);
-            return View(await sPDataContext.ToListAsync());
+            //var sPDataContext = _context.Spaceships.Include(s => s.Dock);
+            //return View(await sPDataContext.ToListAsync());
+
+            return View(await _spaceshipsDataAccess.GetSpaceships());
         }
 
         // GET: Spaceships/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var spaceships = await _context.Spaceships
+            //    .Include(s => s.Dock)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            //if (spaceships == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(spaceships);
+
+            var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
+            if(spaceships == null)
             {
                 return NotFound();
             }
-
-            var spaceships = await _context.Spaceships
-                .Include(s => s.Dock)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (spaceships == null)
+            else
             {
-                return NotFound();
+                return View(spaceships);
             }
-
-            return View(spaceships);
         }
 
         // GET: Spaceships/Create
         [Authorize(Roles = "Manager, Admin")]
         public IActionResult Create()
         {
-            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name");
+            ViewData["DockId"] = new SelectList(_docksDataAccess.ReturnDocks(), "Id", "Name");
             return View();
         }
 
@@ -66,11 +84,12 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(spaceships);
-                await _context.SaveChangesAsync();
+                //_context.Add(spaceships);
+                //await _context.SaveChangesAsync();
+                await _spaceshipsDataAccess.CreateSpaceship(spaceships);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            ViewData["DockId"] = new SelectList(_docksDataAccess.ReturnDocks(), "Id", "Name", spaceships.DockId);
             return View(spaceships);
         }
 
@@ -83,12 +102,12 @@ namespace SP.DataManager.Controllers
                 return NotFound();
             }
 
-            var spaceships = await _context.Spaceships.FindAsync(id);
+            var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
             if (spaceships == null)
             {
                 return NotFound();
             }
-            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            ViewData["DockId"] = new SelectList(_docksDataAccess.ReturnDocks(), "Id", "Name", spaceships.DockId);
             return View(spaceships);
         }
 
@@ -109,8 +128,9 @@ namespace SP.DataManager.Controllers
             {
                 try
                 {
-                    _context.Update(spaceships);
-                    await _context.SaveChangesAsync();
+                    //_context.Update(spaceships);
+                    //await _context.SaveChangesAsync();
+                    await _spaceshipsDataAccess.EditSpaceships(spaceships);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,7 +145,7 @@ namespace SP.DataManager.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DockId"] = new SelectList(_context.Docks, "Id", "Name", spaceships.DockId);
+            ViewData["DockId"] = new SelectList(_docksDataAccess.ReturnDocks(), "Id", "Name", spaceships.DockId);
             return View(spaceships);
         }
 
@@ -138,9 +158,10 @@ namespace SP.DataManager.Controllers
                 return NotFound();
             }
 
-            var spaceships = await _context.Spaceships
-                .Include(s => s.Dock)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var spaceships = await _context.Spaceships
+            //    .Include(s => s.Dock)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
             if (spaceships == null)
             {
                 return NotFound();
@@ -155,15 +176,17 @@ namespace SP.DataManager.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var spaceships = await _context.Spaceships.FindAsync(id);
-            _context.Spaceships.Remove(spaceships);
-            await _context.SaveChangesAsync();
+            //var spaceships = await _context.Spaceships.FindAsync(id);
+            //_context.Spaceships.Remove(spaceships);
+            //await _context.SaveChangesAsync();
+            await _spaceshipsDataAccess.DeleteSpaceships(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool SpaceshipsExists(int id)
         {
-            return _context.Spaceships.Any(e => e.Id == id);
+            //return _context.Spaceships.Any(e => e.Id == id);
+            return _spaceshipsDataAccess.CheckSpaceshipsExists(id);
         }
     }
 }
