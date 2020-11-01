@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -66,7 +67,19 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _spaceshipsDataAccess.CreateSpaceship(spaceships);
+                bool test = await _spaceshipsDataAccess.CanAddSpaceshipToDock(spaceships.DockId);
+                if (test)
+                {
+                    
+                    await _spaceshipsDataAccess.CreateSpaceship(spaceships);
+                    await _docksDataAccess.IncreaseDockCapacity(spaceships.DockId);
+                }
+                else
+                {
+                    ModelState.AddModelError("Add", "Selected dock full: cannot add spaceship to dock.");
+                    return View(spaceships);
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DockId"] = new SelectList(_docksDataAccess.ReturnDocks(), "Id", "Name", spaceships.DockId);
@@ -149,7 +162,10 @@ namespace SP.DataManager.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        {         
+            var spaceship = await _spaceshipsDataAccess.GetSpaceshipsById(id);
+            int dockId = spaceship.DockId;
+            await _docksDataAccess.DecreaseDockCapacity(dockId);
             await _spaceshipsDataAccess.DeleteSpaceships(id);
             return RedirectToAction(nameof(Index));
         }

@@ -70,5 +70,20 @@ namespace SP.DataManager.Data.DataAccess
         {
             return _context.Spaceships;
         }
+
+        public async Task<bool> CanAddSpaceshipToDock(int id)
+        {
+            var docks = await _context.Docks
+                .Include(d => d.Manager)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (docks.CurrentCapacity < docks.MaxCapacity)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

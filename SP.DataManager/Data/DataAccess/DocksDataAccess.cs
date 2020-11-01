@@ -67,6 +67,19 @@ namespace SP.DataManager.Data.DataAccess
             return _context.Docks.Any(e => e.Id == id);
         }
 
+        public async Task IncreaseDockCapacity(int? dockId)
+        {
+            var docks = await GetDockById(dockId);
+            docks.CurrentCapacity++;
+            await EditDocks(docks);
+        }
+
+        public async Task DecreaseDockCapacity(int? dockId)
+        {
+            var docks = await GetDockById(dockId);
+            docks.CurrentCapacity--;
+            await EditDocks(docks);
+        }
 
     }
 }

@@ -13,5 +13,6 @@ namespace SP.DataManager.Data.DataAccess
         Task<List<Spaceships>> GetSpaceships();
         Task<Spaceships> GetSpaceshipsById(int? id);
         dynamic ReturnSpaceships();
+        Task<bool> CanAddSpaceshipToDock(int id);
     }
 }

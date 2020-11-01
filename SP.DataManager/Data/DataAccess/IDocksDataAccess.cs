@@ -13,5 +13,7 @@ namespace SP.DataManager.Data.DataAccess
         Task<List<Docks>> GetDocks();
         dynamic ReturnDocks();
         bool CheckDockExists(int id);
+        Task IncreaseDockCapacity(int? dockId);
+        Task DecreaseDockCapacity(int? dockId);
     }
 }
