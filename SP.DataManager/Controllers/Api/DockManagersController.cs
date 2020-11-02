@@ -16,11 +16,11 @@ namespace SP.DataManager.Controllers.Api
     [ApiController]
     public class DockManagersController : ControllerBase
     {
-        private readonly SPDataContext _context;
+        private readonly IDockManagersDataAccess _dockManagersDataAccess;
 
-        public DockManagersController(SPDataContext context)
+        public DockManagersController(IDockManagersDataAccess dockManagersDataAccess)
         {
-            _context = context;
+            _dockManagersDataAccess = dockManagersDataAccess;
         }
 
         // GET: api/DockManagers
@@ -29,7 +29,8 @@ namespace SP.DataManager.Controllers.Api
         public async Task<ActionResult<IEnumerable<DockManagers>>> GetDockManagers()
         {
             
-            return await _context.DockManagers.ToListAsync();
+            //return await _context.DockManagers.ToListAsync();
+            return await _dockManagersDataAccess.GetDockManagers();
         }
 
         // GET: api/DockManagers/5
@@ -37,7 +38,8 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<DockManagers>> GetDockManagers(int id)
         {
-            var dockManagers = await _context.DockManagers.FindAsync(id);
+            //var dockManagers = await _context.DockManagers.FindAsync(id);
+            var dockManagers = await _dockManagersDataAccess.GetDataManagersById(id);
 
             if (dockManagers == null)
             {
@@ -59,11 +61,12 @@ namespace SP.DataManager.Controllers.Api
                 return BadRequest();
             }
 
-            _context.Entry(dockManagers).State = EntityState.Modified;
+            //_context.Entry(dockManagers).State = EntityState.Modified;
+            _dockManagersDataAccess.ApiStateModified(dockManagers);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _dockManagersDataAccess.ApiSaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -87,8 +90,9 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<DockManagers>> PostDockManagers(DockManagers dockManagers)
         {
-            _context.DockManagers.Add(dockManagers);
-            await _context.SaveChangesAsync();
+            //_context.DockManagers.Add(dockManagers);
+            //await _context.SaveChangesAsync();
+            await _dockManagersDataAccess.CreateDockManager(dockManagers);
 
             return CreatedAtAction("GetDockManagers", new { id = dockManagers.Id }, dockManagers);
         }
@@ -98,21 +102,24 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<DockManagers>> DeleteDockManagers(int id)
         {
-            var dockManagers = await _context.DockManagers.FindAsync(id);
+            //var dockManagers = await _context.DockManagers.FindAsync(id);
+            var dockManagers = await _dockManagersDataAccess.GetDataManagersById(id);
             if (dockManagers == null)
             {
                 return NotFound();
             }
 
-            _context.DockManagers.Remove(dockManagers);
-            await _context.SaveChangesAsync();
+            //_context.DockManagers.Remove(dockManagers);
+            //await _context.SaveChangesAsync();
+            await _dockManagersDataAccess.DeleteDockManager(id);
 
             return dockManagers;
         }
 
         private bool DockManagersExists(int id)
         {
-            return _context.DockManagers.Any(e => e.Id == id);
+            //return _context.DockManagers.Any(e => e.Id == id);
+            return _dockManagersDataAccess.CheckDockManagersExists(id);
         }
     }
 }
