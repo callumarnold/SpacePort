@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP.DataManager.Data;
+using SP.DataManager.Data.DataAccess;
 using SP.DataManager.Models;
 
 namespace SP.DataManager.Controllers.Api
@@ -15,25 +18,29 @@ namespace SP.DataManager.Controllers.Api
     [ApiController]
     public class SpaceshipsController : ControllerBase
     {
-        private readonly SPDataContext _context;
+        private readonly ISpaceshipsDataAccess _spaceshipsDataAccess;
+        private readonly IDocksDataAccess _docksDataAccess;
 
-        public SpaceshipsController(SPDataContext context)
+        public SpaceshipsController(ISpaceshipsDataAccess spaceshipsDataAccess, IDocksDataAccess docksDataAccess)
         {
-            _context = context;
+            _spaceshipsDataAccess = spaceshipsDataAccess;
+            _docksDataAccess = docksDataAccess;
         }
 
         // GET: api/Spaceships
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Spaceships>>> GetSpaceships()
         {
-            return await _context.Spaceships.ToListAsync();
+            //return await _context.Spaceships.ToListAsync();
+            return await _spaceshipsDataAccess.GetSpaceships();
         }
 
         // GET: api/Spaceships/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Spaceships>> GetSpaceships(int id)
         {
-            var spaceships = await _context.Spaceships.FindAsync(id);
+            //var spaceships = await _context.Spaceships.FindAsync(id);
+            var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
 
             if (spaceships == null)
             {
@@ -55,11 +62,13 @@ namespace SP.DataManager.Controllers.Api
                 return BadRequest();
             }
 
-            _context.Entry(spaceships).State = EntityState.Modified;
+            //_context.Entry(spaceships).State = EntityState.Modified;
+            _spaceshipsDataAccess.ApiStateModified(spaceships);
 
             try
             {
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+                await _spaceshipsDataAccess.ApiSaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -83,8 +92,20 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<Spaceships>> PostSpaceships(Spaceships spaceships)
         {
-            _context.Spaceships.Add(spaceships);
-            await _context.SaveChangesAsync();
+            //_context.Spaceships.Add(spaceships);
+            //await _context.SaveChangesAsync();
+            bool canAddSpaceship = await _spaceshipsDataAccess.CanAddSpaceshipToDock(spaceships.DockId);
+            if (canAddSpaceship)
+            {
+
+                await _spaceshipsDataAccess.CreateSpaceship(spaceships);
+                await _docksDataAccess.IncreaseDockCapacity(spaceships.DockId);
+            }
+            else
+            {
+                return BadRequest();
+            }
+            await _spaceshipsDataAccess.CreateSpaceship(spaceships);
 
             return CreatedAtAction("GetSpaceships", new { id = spaceships.Id }, spaceships);
         }
@@ -94,21 +115,26 @@ namespace SP.DataManager.Controllers.Api
         [Authorize]
         public async Task<ActionResult<Spaceships>> DeleteSpaceships(int id)
         {
-            var spaceships = await _context.Spaceships.FindAsync(id);
+            //var spaceships = await _context.Spaceships.FindAsync(id);
+            var spaceships = await _spaceshipsDataAccess.GetSpaceshipsById(id);
+            int dockId = spaceships.DockId;
             if (spaceships == null)
             {
                 return NotFound();
             }
 
-            _context.Spaceships.Remove(spaceships);
-            await _context.SaveChangesAsync();
+            //_context.Spaceships.Remove(spaceships);
+            //await _context.SaveChangesAsync();
+            await _docksDataAccess.DecreaseDockCapacity(dockId);
+            await _spaceshipsDataAccess.DeleteSpaceships(id);
 
             return spaceships;
         }
 
         private bool SpaceshipsExists(int id)
         {
-            return _context.Spaceships.Any(e => e.Id == id);
+            //return _context.Spaceships.Any(e => e.Id == id);
+            return _spaceshipsDataAccess.CheckSpaceshipsExists(id);
         }
     }
 }

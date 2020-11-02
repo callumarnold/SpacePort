@@ -85,5 +85,15 @@ namespace SP.DataManager.Data.DataAccess
                 return false;
             }
         }
+
+        public void ApiStateModified(Spaceships spaceships)
+        {
+            _context.Entry(spaceships).State = EntityState.Modified;
+        }
+
+        public async Task ApiSaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
