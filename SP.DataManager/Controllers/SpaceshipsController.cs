@@ -67,8 +67,8 @@ namespace SP.DataManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool test = await _spaceshipsDataAccess.CanAddSpaceshipToDock(spaceships.DockId);
-                if (test)
+                bool canAddSpaceship = await _spaceshipsDataAccess.CanAddSpaceshipToDock(spaceships.DockId);
+                if (canAddSpaceship)
                 {
                     
                     await _spaceshipsDataAccess.CreateSpaceship(spaceships);
@@ -76,7 +76,7 @@ namespace SP.DataManager.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Add", "Selected dock full: cannot add spaceship to dock.");
+                    ModelState.AddModelError("Add", "Cannot add spaceship to dock; selected dock full.");
                     return View(spaceships);
                 }
                 
