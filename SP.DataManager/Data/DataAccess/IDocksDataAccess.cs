@@ -15,5 +15,7 @@ namespace SP.DataManager.Data.DataAccess
         bool CheckDockExists(int id);
         Task IncreaseDockCapacity(int? dockId);
         Task DecreaseDockCapacity(int? dockId);
+        void ApiStateModified(Docks docks);
+        Task ApiSaveChanges();
     }
 }

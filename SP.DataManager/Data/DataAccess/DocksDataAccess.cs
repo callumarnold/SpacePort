@@ -81,5 +81,15 @@ namespace SP.DataManager.Data.DataAccess
             await EditDocks(docks);
         }
 
+        public void ApiStateModified(Docks docks)
+        {
+            _context.Entry(docks).State = EntityState.Modified;
+        }
+
+        public async Task ApiSaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
