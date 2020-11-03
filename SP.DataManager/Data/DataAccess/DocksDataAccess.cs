@@ -91,5 +91,16 @@ namespace SP.DataManager.Data.DataAccess
             await _context.SaveChangesAsync();
         }
 
+        public bool ValidateDockEdit(Docks docks)
+        {
+            if(docks.MaxCapacity > docks.CurrentCapacity)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

@@ -105,6 +105,16 @@ namespace SP.DataManager.Controllers
 
             if (ModelState.IsValid)
             {
+                if(_docksDataAccess.ValidateDockEdit(docks) == false)
+                {
+                    //ModelState.AddModelError("Edit", "Max capacity cannot be lower than current capacity.");
+                    //return View(docks);
+                    //return Content("Max capacity cannot be lower than current capacity.");
+                    //ViewBag.Message = string.Format("no");
+
+                    //TODO: improve user experience here
+                    return RedirectToAction(nameof(Index));
+                }
                 try
                 {
                     await _docksDataAccess.EditDocks(docks);

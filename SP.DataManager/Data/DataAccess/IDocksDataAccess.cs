@@ -17,5 +17,6 @@ namespace SP.DataManager.Data.DataAccess
         Task DecreaseDockCapacity(int? dockId);
         void ApiStateModified(Docks docks);
         Task ApiSaveChanges();
+        bool ValidateDockEdit(Docks docks);
     }
 }

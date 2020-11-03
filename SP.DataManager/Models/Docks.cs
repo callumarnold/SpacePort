@@ -14,7 +14,7 @@ namespace SP.DataManager.Models
         public string Name { get; set; }
         public int ManagerId { get; set; }
         public int MaxCapacity { get; set; }
-        public int CurrentCapacity { get; set; } = 0;
+        public int CurrentCapacity { get; set; }
 
         public virtual DockManagers Manager { get; set; }
         public virtual ICollection<Spaceships> Spaceships { get; set; }
